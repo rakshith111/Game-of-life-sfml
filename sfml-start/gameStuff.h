@@ -3,7 +3,7 @@
 #include<SFML\System.hpp>
 #include<SFML\Audio.hpp>
 #include<SFML\Network.hpp>
-
+#include "button.h"
 class gameOfLife
 {
 private:
@@ -11,10 +11,11 @@ private:
 	sf::RenderWindow* mainWindow;
 	sf::VideoMode vMode;
 	sf::Event eventHandler;
-
+	Button* drawModeBtn; // Declare a pointer to Button
 	void initVars();
 	void initWindow();
 	void pollEvents();
+	
 		
 public:
 	gameOfLife();
@@ -25,8 +26,12 @@ public:
 
 	void update();
 	void render();
+	void addBtns();
 	// get global mouse position
 	sf::Vector2i mousePosition;
+
+
+
 
 };
 

@@ -3,7 +3,7 @@
 
 
 
-int main() {
+int ye() {
 	sf::RenderWindow window;
 
 	sf::Vector2i centerWindow((sf::VideoMode::getDesktopMode().width / 2) - 445, (sf::VideoMode::getDesktopMode().height / 2) - 480);
@@ -33,12 +33,7 @@ int main() {
 
 		sf::Event Event;
 
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
-		//	text1.setSelected(true);
-		//}
-		//else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		//	text1.setSelected(false);
-		//}
+	
 
 		//Event Loop:
 		while (window.pollEvent(Event)) {
@@ -66,4 +61,5 @@ int main() {
 		btn1.drawTo(window);
 		window.display();
 	}
+	return 0;
 }
