@@ -18,6 +18,11 @@ gameOfLife::~gameOfLife()
 	std::cout << "Close window \n";
 	delete this->mainWindow;
 	delete drawModeBtn;
+	delete drawMode;
+	delete startEvolutionBtn;
+	delete stopEvolutionBtn;
+	delete evoRunningMode;
+
 }
 //accessor
 const bool gameOfLife::running() const
@@ -75,12 +80,15 @@ void gameOfLife::pollEvents()
 			break;
 
 		case sf::Event::MouseMoved:
-			if (drawModeBtn->isMouseOver(*this->mainWindow)) {
-				drawModeBtn->setBackColor(sf::Color::Magenta);
+			for (auto& pair : buttonMap) {
+				if (pair.first->isMouseOver(*this->mainWindow)) {
+					pair.first->setBackColor(sf::Color::Magenta);
+				}
+				else {
+					pair.first->setBackColor(sf::Color::Green);
+				}
 			}
-			else {
-				drawModeBtn->setBackColor(sf::Color::Green);
-			}
+	
 			break;
 		case sf::Event::MouseButtonPressed:
 			if (this->eventHandler.mouseButton.button == sf::Mouse::Left) {
@@ -90,13 +98,16 @@ void gameOfLife::pollEvents()
 				// Print the mouse position
 				std::cout << "Mouse Position: x = " << this->mousePosition.x << ", y = " << this->mousePosition.y << std::endl;
 			}
-			if (drawModeBtn->isMouseOver(*this->mainWindow)) {
-				std::cout << "test " << "\n";
+			for (auto& pair : buttonMap) {
+				if (pair.first->isMouseOver(*this->mainWindow)) {
+					std::cout << "Button pressed: " << pair.second << "\n";
+				
+				}
 			}
-			break;
-	
-
 		}
+		break;
+
+		
 	}
 }
 
@@ -131,10 +142,12 @@ void gameOfLife::addBtns()
 	drawModeBtn = new btnStore::Button("Draw", { 100, 100 }, originalTextSize , sf::Color::Green, sf::Color::Black);
 	drawModeBtn->setFont(font);
 	drawModeBtn->setPosition({ 20,20 });
+	buttonMap[drawModeBtn] = "Draw";
 	// lock items btn
 	startEvolutionBtn = new btnStore::Button("Start", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
 	startEvolutionBtn->setFont(font);
 	startEvolutionBtn->setPosition({ 140,20 });
+	buttonMap[startEvolutionBtn] = "Start";
 
 }
 
