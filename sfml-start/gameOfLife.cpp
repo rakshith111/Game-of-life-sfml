@@ -30,6 +30,10 @@ void gameOfLife::initVars()
 	std::cout << "Init vars \n";
 	this->mainWindow = nullptr;
 	this->drawModeBtn = nullptr;
+	this->drawMode = nullptr;
+	this->startEvolutionBtn = nullptr;
+	this->stopEvolutionBtn = nullptr;
+	this->evoRunningMode = nullptr;
 	this->mousePosition = sf::Mouse::getPosition();
 	originalTextSize = { 25 };
 
@@ -111,6 +115,7 @@ void gameOfLife::render()
 	this->mainWindow->clear(sf::Color(255, 255, 255));
 
 	drawModeBtn->drawTo(*this->mainWindow);
+	startEvolutionBtn->drawTo(*this->mainWindow);
 	this->mainWindow->display();
 
 }
@@ -121,8 +126,15 @@ void gameOfLife::addBtns()
 		std::cout << "Font not found!\n";
 	else
 		std::cout << "Font Loaded!\n";
+
+	// draw mode btn
 	drawModeBtn = new btnStore::Button("Draw", { 100, 100 }, originalTextSize , sf::Color::Green, sf::Color::Black);
 	drawModeBtn->setFont(font);
 	drawModeBtn->setPosition({ 20,20 });
+	// lock items btn
+	startEvolutionBtn = new btnStore::Button("Start", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
+	startEvolutionBtn->setFont(font);
+	startEvolutionBtn->setPosition({ 140,20 });
+
 }
 

@@ -3,7 +3,7 @@
 #include<SFML\System.hpp>
 #include<SFML\Audio.hpp>
 #include<SFML\Network.hpp>
-
+#include <unordered_map>
 #include "btn.h"
 
 class gameOfLife
@@ -22,6 +22,13 @@ public:
 	sf::Vector2i mousePosition; // get global mouse position
 	btnStore::Button* drawModeBtn; // Declare a pointer to Button
 
+	bool* drawMode;
+	btnStore::Button* startEvolutionBtn;
+	bool* evoRunningMode;
+	btnStore::Button* stopEvolutionBtn;
+
+
+
 private:
 	//vars
 	sf::RenderWindow* mainWindow;
@@ -29,7 +36,7 @@ private:
 	sf::Event eventHandler;
 	sf::Font font;     // Declare a font
 
-	
+	std::unordered_map<btnStore::Button*, std::string> buttonMap; // Map to store buttons and their names
 	int originalTextSize; // Store the original text size
 	//funcs
 	void initVars();
