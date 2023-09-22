@@ -18,10 +18,10 @@ gameOfLife::~gameOfLife()
 	std::cout << "Close window \n";
 	delete this->mainWindow;
 	delete drawModeBtn;
-	delete drawMode;
+
 	delete startEvolutionBtn;
 	delete stopEvolutionBtn;
-	delete evoRunningMode;
+
 
 }
 //accessor
@@ -35,10 +35,10 @@ void gameOfLife::initVars()
 	std::cout << "Init vars \n";
 	this->mainWindow = nullptr;
 	this->drawModeBtn = nullptr;
-	this->drawMode = nullptr;
+
 	this->startEvolutionBtn = nullptr;
 	this->stopEvolutionBtn = nullptr;
-	this->evoRunningMode = nullptr;
+
 	this->mousePosition = sf::Mouse::getPosition();
 	originalTextSize = { 25 };
 
@@ -47,7 +47,7 @@ void gameOfLife::initVars()
 void gameOfLife::initWindow()
 {
 	std::cout << "Init window \n";
-	this->vMode.height = {720};
+	this->vMode.height = { 720 };
 	this->vMode.width = { 1280 };
 	this->mainWindow = new sf::RenderWindow(this->vMode, "Game of Life", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 	// position to center
@@ -70,7 +70,6 @@ void gameOfLife::pollEvents()
 
 		switch (this->eventHandler.type) {
 
-
 		case sf::Event::Closed:
 			this->mainWindow->close();
 			break;
@@ -85,10 +84,18 @@ void gameOfLife::pollEvents()
 					pair.first->setBackColor(sf::Color::Magenta);
 				}
 				else {
-					pair.first->setBackColor(sf::Color::Green);
+					switch (pair.second.state) {
+					case true:
+						bgColor = sf::Color::Green;
+						break;
+					case false:
+						bgColor = sf::Color::Red;
+						break;
+					}
+					pair.first->setBackColor(bgColor);
 				}
 			}
-	
+
 			break;
 		case sf::Event::MouseButtonPressed:
 			if (this->eventHandler.mouseButton.button == sf::Mouse::Left) {
@@ -99,20 +106,18 @@ void gameOfLife::pollEvents()
 				std::cout << "Mouse Position: x = " << this->mousePosition.x << ", y = " << this->mousePosition.y << std::endl;
 			}
 			for (auto& pair : buttonMap) {
+
+
 				if (pair.first->isMouseOver(*this->mainWindow)) {
-					std::cout << "Button pressed: " << pair.second << "\n";
-				
+
+					pair.second.state = !pair.second.state;
+					std::cout << "Button pressed: " << pair.second.btnName << "State: " << pair.second.state << "\n";
 				}
 			}
+			break;
 		}
-		break;
-
-		
 	}
 }
-
-
-
 
 
 // public funcs
@@ -139,15 +144,18 @@ void gameOfLife::addBtns()
 		std::cout << "Font Loaded!\n";
 
 	// draw mode btn
-	drawModeBtn = new btnStore::Button("Draw", { 100, 100 }, originalTextSize , sf::Color::Green, sf::Color::Black);
+	drawModeBtn = new btnStore::Button("Draw", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
 	drawModeBtn->setFont(font);
 	drawModeBtn->setPosition({ 20,20 });
-	buttonMap[drawModeBtn] = "Draw";
+	buttonMap[drawModeBtn] = boolBtnData{ true,"Draw" };
+
+
 	// lock items btn
 	startEvolutionBtn = new btnStore::Button("Start", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
 	startEvolutionBtn->setFont(font);
 	startEvolutionBtn->setPosition({ 140,20 });
-	buttonMap[startEvolutionBtn] = "Start";
+	buttonMap[startEvolutionBtn] = boolBtnData{ false,"Start" };
+
 
 }
 

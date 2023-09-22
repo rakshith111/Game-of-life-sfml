@@ -3,6 +3,7 @@
 #include<SFML\System.hpp>
 #include<SFML\Audio.hpp>
 #include<SFML\Network.hpp>
+#include<string>
 #include <unordered_map>
 #include "btn.h"
 
@@ -18,16 +19,18 @@ public:
 	void update();
 	void render();
 	void addBtns();
-
+	sf::Color bgColor;
 	sf::Vector2i mousePosition; // get global mouse position
 	btnStore::Button* drawModeBtn; // Declare a pointer to Button
 
-	bool* drawMode;
+
 	btnStore::Button* startEvolutionBtn;
-	bool* evoRunningMode;
 	btnStore::Button* stopEvolutionBtn;
 
-
+	struct boolBtnData {
+		bool state;
+		std::string btnName;
+	};
 
 private:
 	//vars
@@ -36,8 +39,9 @@ private:
 	sf::Event eventHandler;
 	sf::Font font;     // Declare a font
 
-	std::unordered_map<btnStore::Button*, std::string> buttonMap; // Map to store buttons and their names
-	int originalTextSize; // Store the original text size
+	std::unordered_map<btnStore::Button*, boolBtnData> buttonMap; // Map to store buttons and their names
+
+	short originalTextSize; // Store the original text size
 	//funcs
 	void initVars();
 	void initWindow();
