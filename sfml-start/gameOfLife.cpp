@@ -9,6 +9,7 @@ gameOfLife::gameOfLife()
 	this->initVars();
 	this->initWindow();
 	this->addBtns();
+	this->addInfoText();
 
 
 }
@@ -17,10 +18,9 @@ gameOfLife::~gameOfLife()
 {
 	std::cout << "Close window \n";
 	delete this->mainWindow;
-	delete drawModeBtn;
 
+	delete drawModeBtn;
 	delete startEvolutionBtn;
-	delete stopEvolutionBtn;
 
 
 }
@@ -40,7 +40,7 @@ void gameOfLife::initVars()
 	this->stopEvolutionBtn = nullptr;
 
 	this->mousePosition = sf::Mouse::getPosition();
-	originalTextSize = { 25 };
+	baseTextSize = { 25 };
 
 }
 
@@ -132,6 +132,7 @@ void gameOfLife::render()
 
 	drawModeBtn->drawTo(*this->mainWindow);
 	startEvolutionBtn->drawTo(*this->mainWindow);
+	this->mainWindow->draw(title);
 	this->mainWindow->display();
 
 }
@@ -144,18 +145,26 @@ void gameOfLife::addBtns()
 		std::cout << "Font Loaded!\n";
 
 	// draw mode btn
-	drawModeBtn = new btnStore::Button("Draw", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
+	drawModeBtn = new btnStore::Button("Draw", { 150, 100 }, baseTextSize, sf::Color::Green, sf::Color::Black);
 	drawModeBtn->setFont(font);
 	drawModeBtn->setPosition({ 20,20 });
 	buttonMap[drawModeBtn] = boolBtnData{ true,"Draw" };
 
 
 	// lock items btn
-	startEvolutionBtn = new btnStore::Button("Start", { 100, 100 }, originalTextSize, sf::Color::Green, sf::Color::Black);
+	startEvolutionBtn = new btnStore::Button("Start", { 150, 100 }, baseTextSize, sf::Color::Green, sf::Color::Black);
 	startEvolutionBtn->setFont(font);
-	startEvolutionBtn->setPosition({ 140,20 });
+	startEvolutionBtn->setPosition({ 190,20 });
 	buttonMap[startEvolutionBtn] = boolBtnData{ false,"Start" };
 
+}
 
+void gameOfLife::addInfoText()
+{
+	this->title.setFont(this->font);
+	this->title.setString("GAME OF LIFE");
+	this->title.setCharacterSize(this->baseTextSize+40);
+	this->title.setFillColor(sf::Color::Green);
+	this->title.setPosition({ 460,30 });
 }
 

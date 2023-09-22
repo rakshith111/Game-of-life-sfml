@@ -19,13 +19,12 @@ public:
 	void update();
 	void render();
 	void addBtns();
+	void addInfoText();
 	sf::Color bgColor;
 	sf::Vector2i mousePosition; // get global mouse position
+
 	btnStore::Button* drawModeBtn; // Declare a pointer to Button
-
-
 	btnStore::Button* startEvolutionBtn;
-	btnStore::Button* stopEvolutionBtn;
 
 	struct boolBtnData {
 		bool state;
@@ -38,10 +37,12 @@ private:
 	sf::VideoMode vMode;
 	sf::Event eventHandler;
 	sf::Font font;     // Declare a font
+	sf::View gridView;
+	sf::Text title;
 
 	std::unordered_map<btnStore::Button*, boolBtnData> buttonMap; // Map to store buttons and their names
 
-	short originalTextSize; // Store the original text size
+	short baseTextSize; // Store the original text size
 	//funcs
 	void initVars();
 	void initWindow();
