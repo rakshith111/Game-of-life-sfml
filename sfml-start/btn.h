@@ -44,13 +44,14 @@ namespace btnStore {
 			text.setPosition(xPos, yPos);
 		}
 		// for mouse events
-		bool isMouseOver(sf::RenderWindow& window) {
+		bool isMouseOver(sf::RenderWindow& window, sf::View& view) {
 			sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+			sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePosition, view);
 			sf::Vector2f buttonPosition = button.getPosition();
 			sf::Vector2f buttonSize = button.getSize();
 
-			return (mousePosition.x >= buttonPosition.x && mousePosition.x <= buttonPosition.x + buttonSize.x &&
-				mousePosition.y >= buttonPosition.y && mousePosition.y <= buttonPosition.y + buttonSize.y);
+			return (worldMousePos.x >= buttonPosition.x && worldMousePos.x <= buttonPosition.x + buttonSize.x &&
+				worldMousePos.y >= buttonPosition.y && worldMousePos.y <= buttonPosition.y + buttonSize.y);
 		}
 
 	private:
