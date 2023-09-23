@@ -44,8 +44,6 @@ private:
 	sf::Font font;     // Declare a font
 	sf::View gridView;
 	sf::Text title;
-
-
 	sf::Text* stats;
 	sf::Clock dtClock;
 	float gridSizeF = 100.f;
@@ -53,7 +51,7 @@ private:
 	
 
 	float dt = 0.f;
-	float viewSpeed = 100.0f;
+	float viewSpeed = 10000.0f;
 	std::unordered_map<btnStore::Button*, boolBtnData> buttonMap; // Map to store buttons and their names
 
 	short baseTextSize; // Store the original text size

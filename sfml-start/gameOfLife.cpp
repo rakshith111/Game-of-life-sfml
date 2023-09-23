@@ -19,6 +19,7 @@ gameOfLife::~gameOfLife()
 {
 	std::cout << "Close window \n";
 	delete this->mainWindow;
+	delete this->stats;
 
 	delete drawModeBtn;
 	delete startEvolutionBtn;
@@ -41,6 +42,11 @@ void gameOfLife::initVars()
 
 	baseTextSize = { 25 };
 
+	if (!font.loadFromFile("arial.ttf"))
+		std::cout << "Font not found!\n";
+	else
+		std::cout << "Font Loaded!\n";
+
 }
 
 void gameOfLife::initWindow()
@@ -61,7 +67,6 @@ void gameOfLife::initWindow()
 	this->mainWindow->setKeyRepeatEnabled(true);
 	gridView.setSize(this->mainWindow->getSize().x, this->mainWindow->getSize().y);
 	gridView.setCenter(this->mainWindow->getSize().x / 2.0f, this->mainWindow->getSize().y / 2.0f);
-	this->mainWindow->setView(gridView);
 }
 
 
@@ -118,13 +123,30 @@ void gameOfLife::pollEvents()
 		case sf::Event::KeyPressed:
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) //Left
 			{
-				std::cout << "left";
-				//gridView->move(-viewSpeed * dt, 0.f);
+				std::cout << "left ";
+				this->gridView.move(-viewSpeed * dt * 5, 0.f);
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) //Left
 			{
-				//gridView->move(+viewSpeed * dt, 0.f);
-				std::cout << "right";
+				this->gridView.move(viewSpeed * dt * 5, 0.f);
+				std::cout << "right ";
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) //UP
+			{
+				this->gridView.move(0.f, -viewSpeed * dt * 5);
+				std::cout << "UP ";
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) //Down
+			{
+				this->gridView.move(0.f, viewSpeed * 5 * dt);
+				std::cout << "Down ";
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) //Left
+			{
+				std::cout << "\n Reset ";
+				// Reset the gridView
+				this->gridView.setSize(this->mainWindow->getSize().x, this->mainWindow->getSize().y);
+				this->gridView.setCenter(this->mainWindow->getSize().x / 2.0f, this->mainWindow->getSize().y / 2.0f);
 			}
 
 			break;
@@ -168,23 +190,25 @@ void gameOfLife::update()
 void gameOfLife::render()
 {
 	this->mainWindow->clear(sf::Color(255, 255, 255));
-	this->mainWindow->setView(gridView);
+	this->mainWindow->setView(this->gridView);
 
 	drawModeBtn->drawTo(*this->mainWindow);
 	startEvolutionBtn->drawTo(*this->mainWindow);
 	this->mainWindow->draw(title);
-	this->mainWindow->draw(*this->stats);
+
+
 	this->mainWindow->setView(this->mainWindow->getDefaultView());
+	// will add it to the screen than the windo usefull for pinning stuff to screen
+	this->mainWindow->draw(*this->stats);
+
+
 	this->mainWindow->display();
 
 }
 
 void gameOfLife::addBtns()
 {
-	if (!font.loadFromFile("arial.ttf"))
-		std::cout << "Font not found!\n";
-	else
-		std::cout << "Font Loaded!\n";
+
 
 	// draw mode btn
 	drawModeBtn = new btnStore::Button("Draw", { 150, 100 }, baseTextSize, sf::Color::Green, sf::Color::Black);
@@ -212,7 +236,7 @@ void gameOfLife::addInfoText()
 
 	this->stats = new sf::Text;
 	this->stats->setFont(this->font);
-	this->stats->setCharacterSize(this->baseTextSize );
+	this->stats->setCharacterSize(this->baseTextSize);
 	this->stats->setFillColor(sf::Color::Blue);
 	this->stats->setPosition({ 50,500 });
 
