@@ -5,27 +5,45 @@
 
 //constructor
 gameOfLife::gameOfLife()
+	: mainWindow(nullptr),
+	drawModeBtn(nullptr),
+	startEvolutionBtn(nullptr),
+	stats(nullptr)
 {
 	std::cout << "Base constructor \n";
-	this->initVars();
+	this->initVars(); // Initialize the other variables in the constructor body
 	this->initWindow();
 	this->addBtns();
 	this->addInfoText();
-
-
 }
+
 //destructor
 gameOfLife::~gameOfLife()
 {
 	std::cout << "Close window \n";
-	delete this->mainWindow;
-	delete this->stats;
 
-	delete drawModeBtn;
-	delete startEvolutionBtn;
+	// Check if these objects are not nullptr before deleting them
+	if (mainWindow) {
+		delete this->mainWindow;
+		this->mainWindow = nullptr;
+	}
 
+	if (stats) {
+		delete this->stats;
+		this->stats = nullptr;
+	}
 
+	if (drawModeBtn) {
+		delete drawModeBtn;
+		drawModeBtn = nullptr;
+	}
+
+	if (startEvolutionBtn) {
+		delete startEvolutionBtn;
+		startEvolutionBtn = nullptr;
+	}
 }
+
 //accessor
 const bool gameOfLife::running() const
 {
@@ -35,12 +53,7 @@ const bool gameOfLife::running() const
 void gameOfLife::initVars()
 {
 	std::cout << "Init vars \n";
-	this->mainWindow = nullptr;
-	this->drawModeBtn = nullptr;
-	this->startEvolutionBtn = nullptr;
-	this->stats = nullptr;
 
-	baseTextSize = { 25 };
 
 	if (!font.loadFromFile("arial.ttf"))
 		std::cout << "Font not found!\n";
@@ -51,6 +64,7 @@ void gameOfLife::initVars()
 
 void gameOfLife::initWindow()
 {
+
 	std::cout << "Init window \n";
 	this->vMode.height = { 720 };
 	this->vMode.width = { 1280 };
@@ -112,13 +126,13 @@ void gameOfLife::pollEvents()
 		case sf::Event::KeyPressed:
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // Left
 			{
-				std::cout << "left ";
+				std::cout << "Left ";
 				this->gridView.move(-viewSpeed * dt * 5, 0.f);
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) // Right
 			{
 				this->gridView.move(viewSpeed * dt * 5, 0.f);
-				std::cout << "right ";
+				std::cout << "Right ";
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) // UP
 			{
@@ -234,7 +248,7 @@ void gameOfLife::addInfoText()
 void gameOfLife::setButtonBackgroundColor(btnStore::Button* button, bool state)
 {
 	sf::Color bgColor = state ? sf::Color::Green : sf::Color::Red;
-	std::cout << "color set " << bgColor.toInteger()<<"\n";
+	std::cout << "color set " << bgColor.toInteger() << "\n";
 	button->setBackColor(bgColor);
 }
 

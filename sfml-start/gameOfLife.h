@@ -56,7 +56,7 @@ private:
 	float viewSpeed = 10000.0f;
 	std::unordered_map<btnStore::Button*, boolBtnData> buttonMap; // Map to store buttons and their names
 
-	short baseTextSize; // Store the original text size
+	short baseTextSize=25; // Store the original text size
 	//funcs
 	void initVars();
 	void initWindow();
