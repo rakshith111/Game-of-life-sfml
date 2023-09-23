@@ -1,6 +1,7 @@
 #include"gameOfLife.h"
-#include <iostream>
 #include "btn.h"
+#include <iostream>
+#include<sstream>
 
 //constructor
 gameOfLife::gameOfLife()
@@ -35,11 +36,9 @@ void gameOfLife::initVars()
 	std::cout << "Init vars \n";
 	this->mainWindow = nullptr;
 	this->drawModeBtn = nullptr;
-
 	this->startEvolutionBtn = nullptr;
-	this->stopEvolutionBtn = nullptr;
+	this->stats = nullptr;
 
-	this->mousePosition = sf::Mouse::getPosition();
 	baseTextSize = { 25 };
 
 }
@@ -60,6 +59,9 @@ void gameOfLife::initWindow()
 	);
 
 	this->mainWindow->setKeyRepeatEnabled(true);
+	gridView.setSize(this->mainWindow->getSize().x, this->mainWindow->getSize().y);
+	gridView.setCenter(this->mainWindow->getSize().x / 2.0f, this->mainWindow->getSize().y / 2.0f);
+	this->mainWindow->setView(gridView);
 }
 
 
@@ -95,13 +97,10 @@ void gameOfLife::pollEvents()
 					pair.first->setBackColor(bgColor);
 				}
 			}
-
 			break;
+
 		case sf::Event::MouseButtonPressed:
 			if (this->eventHandler.mouseButton.button == sf::Mouse::Left) {
-
-				this->mousePosition = sf::Mouse::getPosition(*this->mainWindow);
-
 				// Print the mouse position
 				std::cout << "Mouse Position: x = " << this->mousePosition.x << ", y = " << this->mousePosition.y << std::endl;
 			}
@@ -115,6 +114,21 @@ void gameOfLife::pollEvents()
 				}
 			}
 			break;
+
+		case sf::Event::KeyPressed:
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) //Left
+			{
+				std::cout << "left";
+				//gridView->move(-viewSpeed * dt, 0.f);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) //Left
+			{
+				//gridView->move(+viewSpeed * dt, 0.f);
+				std::cout << "right";
+			}
+
+			break;
+
 		}
 	}
 }
@@ -123,16 +137,44 @@ void gameOfLife::pollEvents()
 // public funcs
 void gameOfLife::update()
 {
+	//update dt
+	dt = dtClock.restart().asSeconds();
+
+	//update mouse pos
+	this->mousePosition = sf::Mouse::getPosition();
+	this->mousePosWindow = sf::Mouse::getPosition(*this->mainWindow);
+
+	this->mousePosView = this->mainWindow->mapPixelToCoords(mousePosWindow);
+
+	if (this->mousePosView.x >= 0.f)
+		this->mousePosGrid.x = this->mousePosView.x / gridSizeU;
+
+	if (this->mousePosView.y >= 0.f)
+		this->mousePosGrid.y = this->mousePosView.y / gridSizeU;
+
+
+	std::stringstream ss;
+	ss << "Screen: " << mousePosition.x << " " << mousePosition.y << " \n"
+		<< "Window: " << mousePosWindow.x << " " << mousePosWindow.y << " \n"
+		<< "View: " << mousePosView.x << " " << mousePosView.y << " \n"
+		<< "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << " \n";
+	this->stats->setString(ss.str());
+
+
+	//events
 	this->pollEvents();
 }
 
 void gameOfLife::render()
 {
 	this->mainWindow->clear(sf::Color(255, 255, 255));
+	this->mainWindow->setView(gridView);
 
 	drawModeBtn->drawTo(*this->mainWindow);
 	startEvolutionBtn->drawTo(*this->mainWindow);
 	this->mainWindow->draw(title);
+	this->mainWindow->draw(*this->stats);
+	this->mainWindow->setView(this->mainWindow->getDefaultView());
 	this->mainWindow->display();
 
 }
@@ -161,10 +203,18 @@ void gameOfLife::addBtns()
 
 void gameOfLife::addInfoText()
 {
+	//title
 	this->title.setFont(this->font);
 	this->title.setString("GAME OF LIFE");
-	this->title.setCharacterSize(this->baseTextSize+40);
+	this->title.setCharacterSize(this->baseTextSize + 40);
 	this->title.setFillColor(sf::Color::Green);
-	this->title.setPosition({ 460,30 });
+	title.setPosition({ 460,30 });
+
+	this->stats = new sf::Text;
+	this->stats->setFont(this->font);
+	this->stats->setCharacterSize(this->baseTextSize );
+	this->stats->setFillColor(sf::Color::Blue);
+	this->stats->setPosition({ 50,500 });
+
 }
 
