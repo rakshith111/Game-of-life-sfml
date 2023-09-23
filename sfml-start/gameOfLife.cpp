@@ -70,13 +70,10 @@ void gameOfLife::initWindow()
 }
 
 
-
 void gameOfLife::pollEvents()
 {
 	while (this->mainWindow->pollEvent(this->eventHandler)) {
-
 		switch (this->eventHandler.type) {
-
 		case sf::Event::Closed:
 			this->mainWindow->close();
 			break;
@@ -87,19 +84,14 @@ void gameOfLife::pollEvents()
 
 		case sf::Event::MouseMoved:
 			for (auto& pair : buttonMap) {
-				if (pair.first->isMouseOver(*this->mainWindow)) {
+				bool isMouseOver = pair.first->isMouseOver(*this->mainWindow, this->gridView);
+				if (isMouseOver && !pair.second.hover) {
+					pair.second.hover = true;
 					pair.first->setBackColor(sf::Color::Magenta);
 				}
-				else {
-					switch (pair.second.state) {
-					case true:
-						bgColor = sf::Color::Green;
-						break;
-					case false:
-						bgColor = sf::Color::Red;
-						break;
-					}
-					pair.first->setBackColor(bgColor);
+				else if (!isMouseOver && pair.second.hover) {
+					pair.second.hover = false;
+					setButtonBackgroundColor(pair.first, pair.second.state);
 				}
 			}
 			break;
@@ -107,54 +99,48 @@ void gameOfLife::pollEvents()
 		case sf::Event::MouseButtonPressed:
 			if (this->eventHandler.mouseButton.button == sf::Mouse::Left) {
 				// Print the mouse position
-				std::cout << "Mouse Position: x = " << this->mousePosition.x << ", y = " << this->mousePosition.y << std::endl;
+				std::cout << "Mouse Position: x = " << this->mousePosWindow.x << ", y = " << this->mousePosWindow.y << std::endl;
 			}
 			for (auto& pair : buttonMap) {
-
-
-				if (pair.first->isMouseOver(*this->mainWindow)) {
-
+				if (pair.first->isMouseOver(*this->mainWindow, this->gridView)) {
 					pair.second.state = !pair.second.state;
-					std::cout << "Button pressed: " << pair.second.btnName << "State: " << pair.second.state << "\n";
+					std::cout << "Button pressed: " << pair.second.btnName << " State: " << pair.second.state << "\n";
 				}
 			}
 			break;
 
 		case sf::Event::KeyPressed:
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) //Left
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // Left
 			{
 				std::cout << "left ";
 				this->gridView.move(-viewSpeed * dt * 5, 0.f);
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) //Left
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) // Right
 			{
 				this->gridView.move(viewSpeed * dt * 5, 0.f);
 				std::cout << "right ";
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) //UP
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) // UP
 			{
 				this->gridView.move(0.f, -viewSpeed * dt * 5);
 				std::cout << "UP ";
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) //Down
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) // Down
 			{
 				this->gridView.move(0.f, viewSpeed * 5 * dt);
 				std::cout << "Down ";
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) //Left
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) // Reset
 			{
 				std::cout << "\n Reset ";
 				// Reset the gridView
 				this->gridView.setSize(this->mainWindow->getSize().x, this->mainWindow->getSize().y);
 				this->gridView.setCenter(this->mainWindow->getSize().x / 2.0f, this->mainWindow->getSize().y / 2.0f);
 			}
-
 			break;
-
 		}
 	}
 }
-
 
 // public funcs
 void gameOfLife::update()
@@ -214,14 +200,17 @@ void gameOfLife::addBtns()
 	drawModeBtn = new btnStore::Button("Draw", { 150, 100 }, baseTextSize, sf::Color::Green, sf::Color::Black);
 	drawModeBtn->setFont(font);
 	drawModeBtn->setPosition({ 20,20 });
-	buttonMap[drawModeBtn] = boolBtnData{ true,"Draw" };
+	buttonMap[drawModeBtn] = boolBtnData{ true,false,"Draw" };
 
 
 	// lock items btn
 	startEvolutionBtn = new btnStore::Button("Start", { 150, 100 }, baseTextSize, sf::Color::Green, sf::Color::Black);
 	startEvolutionBtn->setFont(font);
 	startEvolutionBtn->setPosition({ 190,20 });
-	buttonMap[startEvolutionBtn] = boolBtnData{ false,"Start" };
+	buttonMap[startEvolutionBtn] = boolBtnData{ false,false,"Start" };
+
+	setButtonBackgroundColor(startEvolutionBtn, buttonMap[startEvolutionBtn].state);
+	setButtonBackgroundColor(drawModeBtn, buttonMap[drawModeBtn].state);
 
 }
 
@@ -240,5 +229,12 @@ void gameOfLife::addInfoText()
 	this->stats->setFillColor(sf::Color::Blue);
 	this->stats->setPosition({ 50,500 });
 
+}
+
+void gameOfLife::setButtonBackgroundColor(btnStore::Button* button, bool state)
+{
+	sf::Color bgColor = state ? sf::Color::Green : sf::Color::Red;
+	std::cout << "color set " << bgColor.toInteger()<<"\n";
+	button->setBackColor(bgColor);
 }
 

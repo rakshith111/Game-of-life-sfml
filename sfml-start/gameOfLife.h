@@ -21,6 +21,7 @@ public:
 	void render();
 	void addBtns();
 	void addInfoText();
+	void setButtonBackgroundColor(btnStore::Button* button, bool state);
 	sf::Color bgColor;
 	sf::Vector2i mousePosition; // get global mouse position
 	sf::Vector2i mousePosWindow;
@@ -33,6 +34,7 @@ public:
 
 	struct boolBtnData {
 		bool state;
+		bool hover; // New hover state
 		std::string btnName;
 	};
 
